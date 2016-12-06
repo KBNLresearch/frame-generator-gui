@@ -1,0 +1,28 @@
+
+body {font-family: helvetica, sans-serif; color: #333; overflow-y: scroll;}
+
+* {margin: 0; padding: 0; border: 0;}
+
+.wrapper {width: 1200px; height: 100vh; margin: auto;}
+
+.form {width: 239px; height: 100%; float: left; border-right: 1px solid #eee; padding: 0 30px;}
+
+h1 {margin: 40px 0;}
+
+.graph {width: 860px; height: 100%; float: left;  padding: 0 20px;}
+
+.link {
+  stroke: #333;
+  stroke-opacity: 0.25;
+}
+
+.node circle {
+  stroke: #fff;
+  stroke-width: 5px;
+}
+
+.anchorNode {
+  pointer-events: none;
+  font-size: 18px;
+  opacity: 0.75;
+}
