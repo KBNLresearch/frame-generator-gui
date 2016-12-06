@@ -15,7 +15,7 @@ $(function() {
           data.append('doc_files[]', file, file.name);
         }
 
-        var url = "http://localhost:8080/";
+        var url = "http://www.kbresearch.nl/frame-generator/";
 
         $.ajax({
             type: "POST",
