@@ -1,83 +1,111 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Frame Generator</title>
+    <title>Frame generator</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="global.css" />
+    <link rel="stylesheet" type="text/css" href="css/global.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.fs.selecter.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="global.js"></script>
+    <script src="js/jquery.fs.selecter.js"></script>
+    <script src="js/global.js"></script>
 </head>
 <body>
+
+    <div class="header-wrapper">
+        <div class="header">
+            <h1>Frame generator</h1>
+            <a href="#">Lab</a>
+            <a href="#">GitHub</a>
+            <a href="#">Help</a>
+        </div>
+    </div>
+
     <div class="wrapper">
 
         <div class="form">
-            <h1>Frame Generator</h1>
-
             <form id="form" method="post" action="" enctype="multipart/form-data">
 
-                Select documents:<br>
-                <input id="doc_files" type="file" name="" multiple>
-                <br><br>
+                <div class="intro">
+                    <p>The frame generator calculates the most important keywords for one or more Dutch text files, based on <a href="#">topic modeling</a> techniques. In addition, it finds the words that are most strongly associated with each keyword, forming so-called frames.</p>
+                    <p>Use the controls below to upload your documents and determine which <a href="#">part-of-speech tags</a> are to be included, as well as in which direction of the keyword and to what distance related frame words are to be searched for.</p>
+                </div>
 
-                Select stop word files:<br>
-                <input type="file" name="stop_files[]" multiple>
-                <br><br>
+                <div class="block left">
+                    <span class="title">Keyword tags:</span>
+                    <input type="checkbox" name="ktag1" value="ADJ" checked><span class="option">Adjective [ADJ]</span><br>
+                    <!-- <input type="checkbox" name="ktag2" value="BW">BW (Adverb)<br> -->
+                    <!-- <input type="checkbox" name="ktag3" value="LET">LET (Punctuation)<br> -->
+                    <!-- <input type="checkbox" name="ktag4" value="LID">LID (Determiner)<br> -->
+                    <input type="checkbox" name="ktag5" value="N" checked><span class="option">Noun [N]</span><br>
+                    <input type="checkbox" name="ktag6" value="SPEC" checked><span class="option">Names [SPEC]</span><br>
+                    <!-- <input type="checkbox" name="ktag7" value="TSW">TSW (Interjection)<br> -->
+                    <!-- <input type="checkbox" name="ktag8" value="TW">TW (Numerator)<br> -->
+                    <!-- <input type="checkbox" name="ktag9" value="VG">VG (Conjunction)<br> -->
+                    <!-- <input type="checkbox" name="ktag10" value="VNW">VNW (Pronoun)<br> -->
+                    <!-- <input type="checkbox" name="ktag11" value="VZ">VZ (Preposition)<br> -->
+                    <input type="checkbox" name="ktag12" value="WW"><span class="option">Verb [WW]</span><br>
+                </div>
 
-                Keyword tags:<br>
-                <input type="checkbox" name="ktag1" value="ADJ">Adjective (ADJ)<br>
-                <!-- <input type="checkbox" name="ktag2" value="BW">BW (Adverb)<br> -->
-                <!-- <input type="checkbox" name="ktag3" value="LET">LET (Punctuation)<br> -->
-                <!-- <input type="checkbox" name="ktag4" value="LID">LID (Determiner)<br> -->
-                <input type="checkbox" name="ktag5" value="N" checked>Noun (N)<br>
-                <input type="checkbox" name="ktag6" value="SPEC" checked>Names(SPEC)<br>
-                <!-- <input type="checkbox" name="ktag7" value="TSW">TSW (Interjection)<br> -->
-                <!-- <input type="checkbox" name="ktag8" value="TW">TW (Numerator)<br> -->
-                <!-- <input type="checkbox" name="ktag9" value="VG">VG (Conjunction)<br> -->
-                <!-- <input type="checkbox" name="ktag10" value="VNW">VNW (Pronoun)<br> -->
-                <!-- <input type="checkbox" name="ktag11" value="VZ">VZ (Preposition)<br> -->
-                <input type="checkbox" name="ktag12" value="WW">Verb (WW)<br>
-                <br>
+                <div class="block">
+                    <span class="title">Frame tags:</span>
+                    <input type="checkbox" name="ftag1" value="ADJ" checked><span class="option">Adjective [ADJ]</span><br>
+                    <!-- <input type="checkbox" name="ftag2" value="BW">BW (Adverb)<br> -->
+                    <!-- <input type="checkbox" name="ftag3" value="LET">LET (Punctuation)<br> -->
+                    <!-- <input type="checkbox" name="ftag4" value="LID">LID (Determiner)<br> -->
+                    <input type="checkbox" name="ftag5" value="N" checked><span class="option">Noun [N]</span><br>
+                    <input type="checkbox" name="ftag6" value="SPEC" checked><span class="option">Names [SPEC]</span><br>
+                    <!-- <input type="checkbox" name="ftag7" value="TSW">TSW (Interjection)<br> -->
+                    <!-- <input type="checkbox" name="ftag8" value="TW">TW (Numerator)<br> -->
+                    <!-- <input type="checkbox" name="ftag9" value="VG">VG (Conjunction)<br> -->
+                    <!-- <input type="checkbox" name="ftag10" value="VNW">VNW (Pronoun)<br> -->
+                    <!-- <input type="checkbox" name="ftag11" value="VZ">VZ (Preposition)<br> -->
+                    <input type="checkbox" name="ftag12" value="WW"><span class="option">Verb [WW]</span><br>
+                </div>
 
-                Frame tags:<br>
-                <input type="checkbox" name="ftag1" value="ADJ" checked>Adjective (ADJ)<br>
-                <!-- <input type="checkbox" name="ftag2" value="BW">BW (Adverb)<br> -->
-                <!-- <input type="checkbox" name="ftag3" value="LET">LET (Punctuation)<br> -->
-                <!-- <input type="checkbox" name="ftag4" value="LID">LID (Determiner)<br> -->
-                <input type="checkbox" name="ftag5" value="N">Noun (N)<br>
-                <input type="checkbox" name="ftag6" value="SPEC">Names (SPEC)<br>
-                <!-- <input type="checkbox" name="ftag7" value="TSW">TSW (Interjection)<br> -->
-                <!-- <input type="checkbox" name="ftag8" value="TW">TW (Numerator)<br> -->
-                <!-- <input type="checkbox" name="ftag9" value="VG">VG (Conjunction)<br> -->
-                <!-- <input type="checkbox" name="ftag10" value="VNW">VNW (Pronoun)<br> -->
-                <!-- <input type="checkbox" name="ftag11" value="VZ">VZ (Preposition)<br> -->
-                <input type="checkbox" name="ftag12" value="WW">Verb (WW)<br>
-                <br>
+                <div class="block left">
+                    <span class="title">Window size:</span>
+                    <select name="window_size" id="window_size">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5" selected>5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <!--<option value="9">9</option>-->
+                        <!--<option value="10">10</option>-->
+                    </select>
+                    <div class="clear"></div>
+                </div>
 
-                Window size:<br>
-                <select name="window_size">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5" selected>5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-                <br><br>
+                <div class="block">
+                    <span class="title">Window direction:</span>
+                    <select name="window_direction" id="window_direction">
+                        <option value="left" selected>Left</option>
+                        <option value="right">Right</option>
+                        <option value="">Both</option>
+                    </select>
+                    <div class="clear"></div>
+                </div>
 
-                Window direction:<br>
-                <select name="window_direction">
-                    <option value="left">Left</option>
-                    <option value="right">Right</option>
-                    <option value="">Both</option>
-                </select>
-                <br><br>
+                <div class="block left">
+                    <!--<span class="title">Select documents:</span>-->
+                    <div class="fileUpload">
+                        <input type="file" id="doc_files" name="" multiple>
+                        <button>Upload files</button>
+                    </div>
+                </div>
 
-                <input type="submit" value="Generate frames"><br>
+                <div class="block">
+                    <input type="submit" value="Generate"><br>
+                </div>
+
+                <div class="clear"></div>
+
+
+
             </form>
         </div>
 
