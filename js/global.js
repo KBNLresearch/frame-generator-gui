@@ -11,8 +11,8 @@ $(function() {
             data.append('doc_files[]', files[i], files[i].name);
         }
 
-        //var url = 'http://localhost:8091'
-        var url = 'http://www.kbresearch.nl/frame-generator/';
+        var url = 'http://localhost:8091'
+        //var url = 'http://www.kbresearch.nl/frame-generator/';
 
         $.ajax({
             type: 'POST',
@@ -31,7 +31,9 @@ $(function() {
     $('#window_size').selecter();
     $('#window_direction').selecter();
 
-    //$('form').submit();
+    dummy_data = '{"frames": [{"keyword": {"test": 1}, "frame": [{"frameword1": 0.5} , {"frameword2": 0.7}]},{"keyword": {"test2": 0.5}, "frame": [{"frameword1": 0.5} , {"frameword3": 0.7}]},{"keyword": {"test3 lang woord": 0.2}, "frame": [{"frameword3": 0.5} , {"frameword4": 0.7}]}]}'
+    graph_data = transform(dummy_data)
+    draw(graph_data);
 
 });
 
@@ -115,7 +117,7 @@ function draw(graph) {
 
     //var color = {1: 'red', 2: 'blue'}
     //var color = ['#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081']
-    var color = ['#', '#33a02c', '#4eb3d3']
+    var color = ['#', '#41ab5d', '#4292c6']
 
     $('.graph').empty();
 
@@ -135,8 +137,8 @@ function draw(graph) {
 
     var node = vis.selectAll('g.node').data(force.nodes()).enter().append('svg:g')
         .attr('class', 'node');
-    node.append('svg:circle').attr('r', 5).style('stroke', function(d) { return color[d.group]; })
-        .style('stroke-width', function(d) { return d.group == 1 ? Math.max(50 * d.score, 12) : 0; })
+    node.append('svg:circle').attr('r', function(d) { return d.group == 1 ? Math.max(12.5 * d.score, 7) : 5; }).style('stroke', function(d) { return color[d.group]; })
+        .style('stroke-width', function(d) { return d.group == 1 ? Math.max(50 * d.score, 15) : 0; })
         .attr('fill', function(d) { return color[d.group]; });
     node.call(force.drag);
 
@@ -147,7 +149,7 @@ function draw(graph) {
         .append('svg:g').attr('class', 'anchorNode');
     anchorNode.append('svg:circle').attr('r', 0);
     anchorNode.append('svg:text').text(function(d, i) { return i % 2 == 0 ? '' : d.node.label.split('/')[0].replace('_', ' ') })
-        .style('font-size', function(d) { return d.node.group == 1 ? Math.max(40 * d.node.score, 20) : 18});
+        .style('font-size', function(d) { return d.node.group == 1 ? String(Math.max(40 * d.node.score, 20)) + 'px' : '18px'});
 
     var updateLink = function() {
         this.attr('x1', function(d) {

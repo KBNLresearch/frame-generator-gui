@@ -15,7 +15,8 @@ body {font-family: helvetica, sans-serif; color: #333; overflow-y: scroll;}
 /* Form */
 .form {width: 289px; height: 100%; float: left; border-right: 1px solid #eee;
     padding: 0 20px; line-height: 20px;}
-.form .intro {padding: 0 10px 10px 10px; background-color: #f7fcf0; border-radius: 3px; margin-top: 20px;}
+.form form {margin-bottom: 20px;}
+.form .intro {padding: 0 10px 10px 10px; background-color: #eee; border-radius: 3px; margin-top: 20px;}
 .form p {padding-top: 10px; font-size: 14px;}
 .form .block {display: block; margin-top: 20px; width: 134px; float: left;}
 .form .left {margin-right: 20px;}
@@ -23,9 +24,9 @@ body {font-family: helvetica, sans-serif; color: #333; overflow-y: scroll;}
 .form input[type="checkbox"] {margin: 0 10px 0 1px;}
 .form .option {font-size: 13px;}
 .form select {width: 147px;}
-.form input[type="submit"], button {width: 133px; padding: 12px 15px;
+.form input[type="submit"], button {width: 133px; padding: 13px 15px 14px 15px;
     border: 1px solid #ccc; border-radius: 3px; background-color: #eee;
-    font-size: 13px; color: #333; line-height: 14px;}
+    font-size: 13px; color: #333; line-height: 13px; height: 42px;}
 .form input[type="submit"]:hover {background-color: #eee;}
 .fileUpload {position: relative; overflow: hidden;}
 .fileUpload input {position: absolute; top: 0; left: 0; margin: 0; padding: 0;
@@ -35,6 +36,6 @@ body {font-family: helvetica, sans-serif; color: #333; overflow-y: scroll;}
 
 /* Graph */
 .graph {width: 870px; height: 100%; float: left;}
-.link {stroke: #4eb3d3; stroke-opacity: 0.2;}
+.link {stroke: #4292c6; stroke-opacity: 0.2;}
 .node circle {stroke: #fff; stroke-width: 0px; stroke-opacity: 0.2;}
 .anchorNode {pointer-events: none; opacity: 0.5;}
