@@ -11,8 +11,8 @@ $(function() {
             data.append('doc_files[]', files[i], files[i].name);
         }
 
-        var url = 'http://localhost:8091'
-        //var url = 'http://www.kbresearch.nl/frame-generator/';
+        //var url = 'http://localhost:8091'
+        var url = 'http://www.kbresearch.nl/frame-generator/';
 
         $.ajax({
             type: 'POST',
@@ -21,6 +21,7 @@ $(function() {
             contentType: false,
             data: data,
             success: function(data) {
+		console.log(data)
                 graph_data = transform(data)
                 draw(graph_data);
             }
@@ -31,7 +32,6 @@ $(function() {
     $('#window_size').selecter();
     $('#window_direction').selecter();
 
-    dummy_data = '{"frames": [{"keyword": {"test": 1}, "frame": [{"frameword1": 0.5} , {"frameword2": 0.7}]},{"keyword": {"test2": 0.5}, "frame": [{"frameword1": 0.5} , {"frameword3": 0.7}]},{"keyword": {"test3 lang woord": 0.2}, "frame": [{"frameword3": 0.5} , {"frameword4": 0.7}]}]}'
     graph_data = transform(dummy_data)
     draw(graph_data);
 
@@ -44,8 +44,8 @@ function transform(data) {
 
     for (var item in json['frames']) {
         for (var keyword in json['frames'][item]['keyword']) {
-            console.log(keyword)
-            console.log(json['frames'][item]['keyword'][keyword])
+            //console.log(keyword)
+            //console.log(json['frames'][item]['keyword'][keyword])
             node = {'label': keyword, 'group': 1,
                 'score': json['frames'][item]['keyword'][keyword]}
             graph_data['nodes'].push(node)
@@ -148,7 +148,7 @@ function draw(graph) {
     var anchorNode = vis.selectAll('g.anchorNode').data(force2.nodes()).enter()
         .append('svg:g').attr('class', 'anchorNode');
     anchorNode.append('svg:circle').attr('r', 0);
-    anchorNode.append('svg:text').text(function(d, i) { return i % 2 == 0 ? '' : d.node.label.split('/')[0].replace('_', ' ') })
+    anchorNode.append('svg:text').text(function(d, i) { return i % 2 == 0 ? '' : d.node.label.split('/')[0].replace(/_/g, ' ') })
         .style('font-size', function(d) { return d.node.group == 1 ? String(Math.max(40 * d.node.score, 20)) + 'px' : '18px'});
 
     var updateLink = function() {
