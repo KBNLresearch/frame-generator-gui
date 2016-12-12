@@ -1,4 +1,14 @@
+var url = 'http://localhost:8091'
+//var url = 'http://www.kbresearch.nl/frame-generator/';
+
 $(function() {
+
+    $('#window_size').selecter();
+    $('#window_direction').selecter();
+
+    var json = $.parseJSON(dummy_data)
+    graph_data = transform(json)
+    draw(graph_data);
 
     $('form').submit(function(e) {
         e.preventDefault();
@@ -7,38 +17,65 @@ $(function() {
         var fileSelect = document.getElementById('doc_files');
         var files = fileSelect.files;
 
-        for (var i = 0; i < files.length; i++) {
-            data.append('doc_files[]', files[i], files[i].name);
+        $('.alert').removeClass('alert-warning alert-info').hide();
+        if (files.length == 0) {
+            $('.alert').addClass('alert-warning').html('<p>No documents \
+                uploaded. Please upload your documents using the Upload files \
+                button.</p>').show();
+            return;
         }
-
-        var url = 'http://localhost:8091'
-        //var url = 'http://www.kbresearch.nl/frame-generator/';
+        if (files.length > 5) {
+            $('.alert').addClass('alert-warning').html('<p>Too many documents \
+                uploaded. Please do not upload more than 5 document files at a \
+                time.</p>').show();
+            return;
+        }
+        for (var i = 0; i < files.length; i++) {
+            if (/.txt$/.test(files[i].name) || /.json$/.test(files[i].name)) {
+                data.append('doc_files[]', files[i], files[i].name);
+            } else {
+                $('.alert').addClass('alert-warning').html('<p>Wrong file type \
+                    uploaded. Please upload only plain text files with .txt \
+                    extension.</p>').show();
+                return;
+            }
+        }
+        $('.alert').addClass('alert-info').html('<p>Processing documents. \
+            Please wait, as this may take some time.</p>').show();
 
         $.ajax({
             type: 'POST',
             url: url,
             processData: false,
             contentType: false,
-            data: data,
-            success: function(data) {
-		console.log(data)
-                graph_data = transform(data)
-                draw(graph_data);
+            data: data
+        })
+        .done(function(data) {
+            console.log(data);
+            var json = $.parseJSON(data)
+            if (json['error']) {
+                $('.alert').removeClass('alert-warning alert-info');
+                $('.alert').addClass('alert-warning').html('<p>Error \
+                    processing documents.</p>');
+                return;
             }
+            graph_data = transform(json);
+            draw(graph_data);
+            $('.alert').hide();
+        })
+        .fail(function() {
+            $('.alert').removeClass('alert-warning alert-info');
+            $('.alert').addClass('alert-warning').html('<p>Error \
+                processing documents.</p>');
+            return;
         });
 
     });
 
-    $('#window_size').selecter();
-    $('#window_direction').selecter();
-
-    graph_data = transform(dummy_data)
-    draw(graph_data);
-
 });
 
-function transform(data) {
-    var json = $.parseJSON(data)
+function transform(json) {
+
     graph_data = {'nodes': [], 'links': [], 'labelAnchors': [],
         'labelAnchorLinks': []}
 
@@ -113,8 +150,8 @@ function draw(graph) {
     var w = 870, h = 700;
     // var labelDistance = 0;
 
-    //var color = {1: 'red', 2: 'blue'}
-    //var color = ['#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081']
+    //var color = ['#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3',
+        //'#2b8cbe','#0868ac','#084081']
     var color = ['#', '#41ab5d', '#4292c6']
 
     $('.graph').empty();
@@ -146,8 +183,8 @@ function draw(graph) {
     var anchorNode = vis.selectAll('g.anchorNode').data(force2.nodes()).enter()
         .append('svg:g').attr('class', 'anchorNode');
     anchorNode.append('svg:circle').attr('r', 0);
-    anchorNode.append('svg:text').text(function(d, i) { return i % 2 == 0 ? '' : d.node.label.split('/')[0].replace(/_/g, ' ') })
-        .style('font-size', function(d) { return d.node.group == 1 ? String(Math.max(40 * d.node.score, 20)) + 'px' : '18px'});
+    anchorNode.append('svg:text').text(function(d, i) { return i % 2 == 0 ? '' : d.node.label.split('/')[0].replace(/_/g, ' '); })
+        .style('font-size', function(d) { return d.node.group == 1 ? String(Math.max(40 * d.node.score, 20)) + 'px' : '18px'; });
 
     var updateLink = function() {
         this.attr('x1', function(d) {
