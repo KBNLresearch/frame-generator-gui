@@ -11,8 +11,8 @@ $(function() {
             data.append('doc_files[]', files[i], files[i].name);
         }
 
-        //var url = 'http://localhost:8091'
-        var url = 'http://www.kbresearch.nl/frame-generator/';
+        var url = 'http://localhost:8091'
+        //var url = 'http://www.kbresearch.nl/frame-generator/';
 
         $.ajax({
             type: 'POST',
@@ -54,44 +54,42 @@ function transform(data) {
         }
     }
     for (var item in json['frames']) {
-        for (var frame in json['frames'][item]['frame']) {
-            for (var frame_word in json['frames'][item]['frame'][frame]) {
-                id_exists = false
+        for (var frame_word in json['frames'][item]['frame']) {
+            id_exists = false
+            for (var node in graph_data['nodes']) {
+                if (graph_data['nodes'][node]['label'] == frame_word) {
+                    id_exists = true;
+                    break;
+                }
+            }
+            if (!id_exists) {
+                node = {'label': frame_word, 'group': 2, 'score': 1}
+                graph_data['nodes'].push(node)
+                graph_data['labelAnchors'].push({'node': node})
+                graph_data['labelAnchors'].push({'node': node})
+            }
+            for (var keyword in json['frames'][item]['keyword']) {
+                var index = 0;
+                var keyword_node_id = 0;
                 for (var node in graph_data['nodes']) {
-                    if (graph_data['nodes'][node]['label'] == frame_word) {
-                        id_exists = true;
+                    if (graph_data['nodes'][node]['label'] == keyword) {
+                        keyword_node_id = index;
                         break;
                     }
+                    index += 1
                 }
-                if (!id_exists) {
-                    node = {'label': frame_word, 'group': 2, 'score': 1}
-                    graph_data['nodes'].push(node)
-                    graph_data['labelAnchors'].push({'node': node})
-                    graph_data['labelAnchors'].push({'node': node})
-                }
-                for (var keyword in json['frames'][item]['keyword']) {
-                    var index = 0;
-                    var keyword_node_id = 0;
-                    for (var node in graph_data['nodes']) {
-                        if (graph_data['nodes'][node]['label'] == keyword) {
-                            keyword_node_id = index;
-                            break;
-                        }
-                        index += 1
+                var index = 0;
+                var frame_word_node_id = 0;
+                for (var node in graph_data['nodes']) {
+                    if (graph_data['nodes'][node]['label'] == frame_word) {
+                        frame_word_node_id = index;
+                        break;
                     }
-                    var index = 0;
-                    var frame_word_node_id = 0;
-                    for (var node in graph_data['nodes']) {
-                        if (graph_data['nodes'][node]['label'] == frame_word) {
-                            frame_word_node_id = index;
-                            break;
-                        }
-                        index += 1
-                    }
-                    graph_data['links'].push({'source': frame_word_node_id,
-                        'target': keyword_node_id,
-                        'score': json['frames'][item]['frame'][frame][frame_word]})
+                    index += 1
                 }
+                graph_data['links'].push({'source': frame_word_node_id,
+                    'target': keyword_node_id,
+                    'score': json['frames'][item]['frame'][frame_word]})
             }
         }
     }
