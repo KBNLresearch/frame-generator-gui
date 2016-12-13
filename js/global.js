@@ -67,7 +67,6 @@ $(function() {
             $('.alert').removeClass('alert-warning alert-info');
             $('.alert').addClass('alert-warning').html('<p>Error \
                 processing documents.</p>');
-            return;
         });
 
     });
@@ -81,8 +80,6 @@ function transform(json) {
 
     for (var item in json['frames']) {
         for (var keyword in json['frames'][item]['keyword']) {
-            //console.log(keyword)
-            //console.log(json['frames'][item]['keyword'][keyword])
             node = {'label': keyword, 'group': 1,
                 'score': json['frames'][item]['keyword'][keyword]}
             graph_data['nodes'].push(node)
@@ -132,39 +129,40 @@ function transform(json) {
     }
     for(var i = 0; i < graph_data['nodes'].length; i++) {
         graph_data['labelAnchorLinks'].push({
-            'source' : i * 2,
-            'target' : i * 2 + 1,
-            'score' : 1
+            'source': i * 2,
+            'target': i * 2 + 1,
+            'score': 1
         });
     };
     return graph_data
 }
 
-function draw(graph) {
+function draw(graph_data) {
 
-    var nodes = graph['nodes'];
-    var labelAnchors = graph['labelAnchors'];
-    var labelAnchorLinks = graph['labelAnchorLinks'];
-    var links = graph['links'];
-
-    var w = 870, h = 700;
-    // var labelDistance = 0;
-
-    //var color = ['#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3',
-        //'#2b8cbe','#0868ac','#084081']
-    var color = ['#', '#41ab5d', '#4292c6']
+    var nodes = graph_data['nodes'];
+    var labelAnchors = graph_data['labelAnchors'];
+    var labelAnchorLinks = graph_data['labelAnchorLinks'];
+    var links = graph_data['links'];
 
     $('.graph').empty();
 
-    var vis = d3.select('.graph').append('svg:svg').attr('width', w).attr('height', h);
+    var w = 870, h = 700;
+    var color = ['', '#41ab5d', '#4292c6']
+
+    var vis = d3.select('.graph')
+        .append('svg:svg')
+        .attr('width', w)
+        .attr('height', h);
 
     var force = d3.layout.force().size([w, h]).nodes(nodes).links(links)
         .gravity(1).linkDistance(function(d) { return Math.max(150 * (1 - d.score), 50); })
         .charge(-3000).linkStrength(5);
+
     force.start();
 
     var force2 = d3.layout.force().nodes(labelAnchors).links(labelAnchorLinks)
         .gravity(0).linkDistance(0).linkStrength(5).charge(-100).size([w, h]);
+
     force2.start();
 
     var link = vis.selectAll('line.link').data(links).enter().append('svg:line')
@@ -237,4 +235,3 @@ function draw(graph) {
     });
 
 }
-
