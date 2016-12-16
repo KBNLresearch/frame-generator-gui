@@ -1,6 +1,8 @@
 /* Global rules */
 body {font-family: helvetica, sans-serif; color: #333; overflow-y: scroll;}
 * {margin: 0; padding: 0; border: 0;}
+a, a:visited {color: #31708f; text-decoration: none;}
+a:hover {text-decoration: underline;}
 .clear {clear: both;}
 
 /* Header */
@@ -36,9 +38,8 @@ body {font-family: helvetica, sans-serif; color: #333; overflow-y: scroll;}
     filter: alpha(opacity=0); cursor: default;
 }
 .alert {padding: 0 10px 10px 10px; background-color: #eee; border-radius: 3px;
-    margin-top: 20px; border: 1px solid #ddd; display: none;}
-.alert {color: #31708f; background-color: #d9edf7; border-color: #bce8f1;}
-.alert-warning {color: #a94442; background-color: #f2dede; border-color: #ebccd1;}
+    margin-top: 20px; border: 1px solid #ddd; display: none; color: #31708f;
+    background-color: #d9edf7; border-color: #bce8f1;}
 
 /* Graph */
 .graph {width: 870px; height: 100%; float: left;}
