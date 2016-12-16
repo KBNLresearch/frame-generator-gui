@@ -7,41 +7,29 @@ $(function() {
     $('#window_direction').selecter();
 
     var json = $.parseJSON(dummy_data)
-    graph_data = transform(json)
-    draw(graph_data);
+    draw(transform(json));
+
+    $('#doc_files').change(function() {
+        check_files();
+    });
 
     $('form').submit(function(e) {
         e.preventDefault();
+        if (!check_files()) { return; }
+
+        $('#generate').prop('disabled', true);
+        $('.alert').html('<p>Processing documents. Please wait, as this may \
+            take some time.</p>').show();
 
         var data = new FormData(this);
         var fileSelect = document.getElementById('doc_files');
         var files = fileSelect.files;
 
-        $('.alert').removeClass('alert-warning alert-info').hide();
-        if (files.length == 0) {
-            $('.alert').addClass('alert-warning').html('<p>No documents \
-                uploaded. Please upload your documents using the Upload files \
-                button.</p>').show();
-            return;
-        }
-        if (files.length > 5) {
-            $('.alert').addClass('alert-warning').html('<p>Too many documents \
-                uploaded. Please do not upload more than 5 document files at a \
-                time.</p>').show();
-            return;
-        }
         for (var i = 0; i < files.length; i++) {
             if (/.txt$/.test(files[i].name) || /.json$/.test(files[i].name)) {
                 data.append('doc_files[]', files[i], files[i].name);
-            } else {
-                $('.alert').addClass('alert-warning').html('<p>Wrong file type \
-                    uploaded. Please upload only plain text files with .txt \
-                    extension.</p>').show();
-                return;
             }
         }
-        $('.alert').addClass('alert-info').html('<p>Processing documents. \
-            Please wait, as this may take some time.</p>').show();
 
         $.ajax({
             type: 'POST',
@@ -54,9 +42,7 @@ $(function() {
             console.log(data);
             var json = $.parseJSON(data)
             if (json['error']) {
-                $('.alert').removeClass('alert-warning alert-info');
-                $('.alert').addClass('alert-warning').html('<p>Error \
-                    processing documents.</p>');
+                $('.alert').html('<p>Error processing documents.</p>');
                 return;
             }
             graph_data = transform(json);
@@ -64,14 +50,41 @@ $(function() {
             $('.alert').hide();
         })
         .fail(function() {
-            $('.alert').removeClass('alert-warning alert-info');
-            $('.alert').addClass('alert-warning').html('<p>Error \
-                processing documents.</p>');
+            $('.alert').html('<p>Error processing documents.</p>');
+        })
+        .always(function() {
+            $('#generate').prop('disabled', false);
         });
-
     });
 
 });
+
+function check_files() {
+    var fileSelect = document.getElementById('doc_files');
+    var files = fileSelect.files;
+    if (files.length == 0) {
+        $('.alert').html('<p>No files uploaded. Please upload your \
+            document files using the Upload files button.</p>').show();
+        return false;
+    }
+    if (files.length > 5) {
+        $('.alert').html('<p>Too many files uploaded. Please do not \
+            upload more than 5 document files at a time.</p>').show();
+        return false;
+    }
+    for (var i = 0; i < files.length; i++) {
+        if (/.txt$/.test(files[i].name) || /.json$/.test(files[i].name)) {
+            // data.append('doc_files[]', files[i], files[i].name);
+        } else {
+            $('.alert').html('<p>Wrong file type uploaded. Please upload \
+                only plain text files with .txt extension.</p>').show();
+            return false;
+        }
+    }
+    $('.alert').html('<p>Files uploaded. Use the Generate button to \
+        generate frames.</p>').show();
+    return true;
+}
 
 function transform(json) {
 

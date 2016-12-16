@@ -29,6 +29,7 @@ body {font-family: helvetica, sans-serif; color: #333; overflow-y: scroll;}
     border: 1px solid #ccc; border-radius: 3px; background-color: #eee;
     font-size: 13px; color: #333; line-height: 13px; height: 42px;}
 .form input[type="submit"]:hover {background-color: #eee;}
+.form input[type="submit"]:disabled {color: #999;}
 .fileUpload {position: relative; overflow: hidden;}
 .fileUpload input {position: absolute; top: 0; left: 0; margin: 0; padding: 0;
     font-size: 20px; cursor: pointer; opacity: 0; height: 42px; width: 133px;
@@ -36,7 +37,7 @@ body {font-family: helvetica, sans-serif; color: #333; overflow-y: scroll;}
 }
 .alert {padding: 0 10px 10px 10px; background-color: #eee; border-radius: 3px;
     margin-top: 20px; border: 1px solid #ddd; display: none;}
-.alert-info {color: #31708f; background-color: #d9edf7; border-color: #bce8f1;}
+.alert {color: #31708f; background-color: #d9edf7; border-color: #bce8f1;}
 .alert-warning {color: #a94442; background-color: #f2dede; border-color: #ebccd1;}
 
 /* Graph */
