@@ -80,8 +80,10 @@ $(function() {
 });
 
 function check_files() {
+
     var fileSelect = document.getElementById('doc_files');
     var files = fileSelect.files;
+
     if (files.length == 0) {
         $('.alert').html('<p>No files uploaded. Please upload your \
             document files using the Upload files button.</p>').show();
@@ -101,8 +103,10 @@ function check_files() {
             return false;
         }
     }
+
     $('.alert').html('<p>Files uploaded. Use the Generate button to \
         generate frames.</p>').show();
+
     return true;
 }
 
@@ -120,6 +124,7 @@ function transform(json) {
             graph_data['labelAnchors'].push({'node': node})
         }
     }
+
     for (var item in json['frames']) {
         for (var frame_word in json['frames'][item]['frame']) {
             id_exists = false
@@ -160,6 +165,7 @@ function transform(json) {
             }
         }
     }
+
     for(var i = 0; i < graph_data['nodes'].length; i++) {
         graph_data['labelAnchorLinks'].push({
             'source': i * 2,
@@ -167,55 +173,75 @@ function transform(json) {
             'score': 1
         });
     };
+
     return graph_data
 }
 
 function draw(graph_data) {
-
-    var nodes = graph_data['nodes'];
-    var labelAnchors = graph_data['labelAnchors'];
-    var labelAnchorLinks = graph_data['labelAnchorLinks'];
-    var links = graph_data['links'];
+    /*
+     * Adaptation of Mike Bostock’s Labeled Force Layout
+     * https://bl.ocks.org/mbostock/950642
+     */
 
     $('.graph').empty();
 
     var w = 870, h = 700;
     var color = ['', '#41ab5d', '#4292c6']
 
-    var vis = d3.select('.graph')
-        .append('svg:svg')
-        .attr('width', w)
+    var vis = d3.select('.graph').append('svg:svg').attr('width', w)
         .attr('height', h);
 
+    var nodes = graph_data['nodes'];
+    var labelAnchors = graph_data['labelAnchors'];
+    var labelAnchorLinks = graph_data['labelAnchorLinks'];
+    var links = graph_data['links'];
+
     var force = d3.layout.force().size([w, h]).nodes(nodes).links(links)
-        .gravity(1).linkDistance(function(d) { return Math.max(150 * (1 - d.score), 50); })
-        .charge(-3000).linkStrength(5);
+        .gravity(1).charge(-3000).linkStrength(5).linkDistance(function(d) {
+            return Math.max(150 * (1 - d.score), 50);
+    });
 
     force.start();
 
-    var force2 = d3.layout.force().nodes(labelAnchors).links(labelAnchorLinks)
-        .gravity(0).linkDistance(0).linkStrength(5).charge(-100).size([w, h]);
+    var force2 = d3.layout.force().size([w, h]).nodes(labelAnchors)
+        .links(labelAnchorLinks).gravity(0).linkDistance(0).linkStrength(5)
+        .charge(-100);
 
     force2.start();
 
     var link = vis.selectAll('line.link').data(links).enter().append('svg:line')
-        .attr('class', 'link').style('stroke-width', function(d) { return Math.min(Math.max(12 * d.score, 1), 10); });
+        .attr('class', 'link').style('stroke-width', function(d) {
+            return Math.min(Math.max(12 * d.score, 1), 10);
+        });
 
-    var node = vis.selectAll('g.node').data(force.nodes()).enter().append('svg:g')
-        .attr('class', 'node');
-    node.append('svg:circle').attr('r', function(d) { return d.group == 1 ? Math.max(12.5 * d.score, 7) : 5; }).style('stroke', function(d) { return color[d.group]; })
-        .style('stroke-width', function(d) { return d.group == 1 ? Math.max(50 * d.score, 15) : 0; })
-        .attr('fill', function(d) { return color[d.group]; });
+    var node = vis.selectAll('g.node').data(force.nodes()).enter()
+        .append('svg:g').attr('class', 'node');
+
+    node.append('svg:circle')
+        .attr('r', function(d) {
+            return d.group == 1 ? Math.max(12.5 * d.score, 7) : 5;
+        }).attr('fill', function(d) {
+            return color[d.group];
+        }).style('stroke', function(d) {
+            return color[d.group];
+        }).style('stroke-width', function(d) {
+            return d.group == 1 ? Math.max(50 * d.score, 15) : 0;
+        });
+
     node.call(force.drag);
 
-    var anchorLink = vis.selectAll('line.anchorLink').data(labelAnchorLinks)
-        //.enter().append('svg:line').attr('class', 'anchorLink').style('stroke', '#999');
+    var anchorLink = vis.selectAll('line.anchorLink').data(labelAnchorLinks);
 
     var anchorNode = vis.selectAll('g.anchorNode').data(force2.nodes()).enter()
         .append('svg:g').attr('class', 'anchorNode');
+
     anchorNode.append('svg:circle').attr('r', 0);
-    anchorNode.append('svg:text').text(function(d, i) { return i % 2 == 0 ? '' : d.node.label.split('/')[0].replace(/_/g, ' '); })
-        .style('font-size', function(d) { return d.node.group == 1 ? String(Math.max(40 * d.node.score, 20)) + 'px' : '18px'; });
+    anchorNode.append('svg:text').text(function(d, i) {
+        return i % 2 == 0 ? '' : d.node.label.split('/')[0].replace(/_/g, ' ');
+    }).style('font-size', function(d) {
+        return d.node.group == 1 ? String(Math.max(40 * d.node.score, 20)) +
+        'px' : '18px';
+    });
 
     var updateLink = function() {
         this.attr('x1', function(d) {
@@ -264,7 +290,6 @@ function draw(graph_data) {
         anchorNode.call(updateNode);
         link.call(updateLink);
         anchorLink.call(updateLink);
-
     });
 
 }
