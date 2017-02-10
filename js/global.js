@@ -89,11 +89,7 @@ function check_files() {
             document files using the Upload files button.</p>').show();
         return false;
     }
-    if (files.length > 5) {
-        $('.alert').html('<p>Too many files uploaded. Please do not \
-            upload more than 5 document files at a time.</p>').show();
-        return false;
-    }
+
     for (var i = 0; i < files.length; i++) {
         if (/.txt$/.test(files[i].name) || /.json$/.test(files[i].name)) {
             // data.append('doc_files[]', files[i], files[i].name);
@@ -104,6 +100,25 @@ function check_files() {
         }
     }
 
+    //if (files.length > 5) {
+    //    $('.alert').html('<p>Too many files uploaded. Please do not \
+    //        upload more than 5 document files at a time.</p>').show();
+    //    return false;
+    //}
+
+    var total_size = 0
+    for (var i = 0; i < files.length; i++) {
+        // console.log(files[i].size)
+        total_size += files[i].size
+    }
+    if (total_size < 25000) {
+        // data.append('doc_files[]', files[i], files[i].name);
+    } else {
+        $('.alert').html('<p>Size limit exceeded. Please do not \
+            upload more than 25 KB of data at a time.</p>').show();
+        return false;
+    }
+ 
     $('.alert').html('<p>Files uploaded. Use the Generate button to \
         generate frames.</p>').show();
 
