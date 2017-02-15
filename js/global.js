@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var url = 'http://localhost:8091'
+var url = 'http://localhost:8091';
 //var url = '../frame-generator/';
 
 $(function() {
