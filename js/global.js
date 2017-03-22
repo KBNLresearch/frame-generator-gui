@@ -46,7 +46,8 @@ $(function() {
         var files = fileSelect.files;
 
         for (var i = 0; i < files.length; i++) {
-            if (/.txt$/.test(files[i].name) || /.json$/.test(files[i].name)) {
+            if (/.txt$/.test(files[i].name) || /.json$/.test(files[i].name) ||
+                    /.xml$/.test(files[i].name)) {
                 data.append('doc_files[]', files[i], files[i].name);
             }
         }
@@ -91,7 +92,8 @@ function check_files() {
     }
 
     for (var i = 0; i < files.length; i++) {
-        if (/.txt$/.test(files[i].name) || /.json$/.test(files[i].name)) {
+        if (/.txt$/.test(files[i].name) || /.json$/.test(files[i].name) ||
+                /.xml$/.test(files[i].name)) {
             // data.append('doc_files[]', files[i], files[i].name);
         } else {
             $('.alert').html('<p>Wrong file type uploaded. Please upload \
