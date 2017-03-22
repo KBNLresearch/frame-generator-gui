@@ -100,12 +100,6 @@ function check_files() {
         }
     }
 
-    //if (files.length > 5) {
-    //    $('.alert').html('<p>Too many files uploaded. Please do not \
-    //        upload more than 5 document files at a time.</p>').show();
-    //    return false;
-    //}
-
     var total_size = 0
     for (var i = 0; i < files.length; i++) {
         // console.log(files[i].size)
@@ -118,7 +112,7 @@ function check_files() {
             upload more than 25 KB of data at a time.</p>').show();
         return false;
     }
- 
+
     $('.alert').html('<p>Files uploaded. Use the Generate button to \
         generate frames.</p>').show();
 
